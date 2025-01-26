@@ -19,8 +19,15 @@ This project is a simple backend service for a peer-to-peer rental platform. It 
 - Jest
 - Swagger
 
+## Setup Instructions with Docker
 
-## Setup Instructions
+1. Clone the repository: `git clone https://github.com/AndriyCh1/tt-rental-platform-backend rental-platform-backend`
+2. Navigate to the project directory: `cd rental-platform-backend`
+3. Create a `.env` file and fill in the values described in `.env.example`.
+4. Run the Docker Compose file: `docker-compose up -d`
+5. Access the Swagger UI at: http://localhost:{PORT}/swagger/
+
+## Setup Instructions with pnpm
 **1. Install `pnpm` Package Manager**
 
 ```bash
@@ -53,13 +60,13 @@ pnpm run start:dev
 
 ##  Testing the API
 
-The easiest way to test the API is through Swagger. You can access the Swagger UI at: http://localhost:4000/swagger/ (Update the port number if needed based on your `.env` configuration).
+The easiest way to test the API is through Swagger. You can access the Swagger UI at: http://localhost:{PORT}/swagger/ (Update the port number if needed based on your `.env` configuration).
 
 The Swagger UI will provide descriptions of the available endpoints and their parameters.
 
 Alternatively, you can also use tools like Postman to interact with the API.
 
-To help with testing, a Seeder Controller has been included to populate the in-memory storage with some items. You can access it at: http://localhost:4000/swagger#/API%20Seeder.
+To help with testing, a Seeder Controller has been included to populate the in-memory storage with some items. You can access it at: http://localhost:{PORT}/swagger#/API%20Seeder.
 
 
 ## Solution and thought process
@@ -70,18 +77,24 @@ To help with testing, a Seeder Controller has been included to populate the in-m
  - Item: Represents items listed by users for rent.
  - Rental: Represents rentals and their statuses, including specified date ranges.
 
-**Business Workflow**
+**Business Workflow**:
 
 - The owner creates a listing, specifying item details and personal contact information.
+  POST /items
 - Renters browse all available items (with filtering and sorting options) and select an item to rent.
+  GET /items
 - The renter submits a rental request. The rental is created and marked as "pending".
+  POST /rentals/items/:itemId
 - The owner accepts or rejects the request, and the rental status is updated accordingly - "approved" or "declined".
+  PATCH /rentals/:id/status Status: "approved" or "declined"
 - The renter makes a payment and the item is marked as "reserved" (with no payment integration, only teh owner can update the status).
+  PATCH /rentals/:id/status Status: "reserved"
 - The renter returns the item and the owner updates the rental status to "returned".
+  PATCH /rentals/:id/status Status: "returned"
 
 **Edge Cases Handled**
 
-- Item not found
+- Items not found
 - Invalid date ranges
 - Overlapping rental dates
 

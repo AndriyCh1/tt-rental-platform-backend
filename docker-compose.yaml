@@ -1,0 +1,12 @@
+services:
+  server:
+    container_name: server
+    build:
+      context: '.'
+      dockerfile: Dockerfile
+      target: production
+    restart: always
+    environment:
+      - PORT=4000
+    ports:
+      - ${PORT:-4000}:4000
