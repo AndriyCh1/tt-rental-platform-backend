@@ -26,17 +26,29 @@ export class ItemsService {
     const item = await this.itemsRepository.findById(id);
 
     if (!item) {
-      throw new ItemNotFoundException();
+      throw new ItemNotFoundException({ id });
     }
 
     return item;
   }
 
   async updateItem(id: Item['id'], payload: UpdateItemData): Promise<Item> {
+    const item = await this.itemsRepository.findById(id);
+
+    if (!item) {
+      throw new ItemNotFoundException({ id });
+    }
+
     return this.itemsRepository.updateById(id, payload);
   }
 
   async deleteItem(id: Item['id']): Promise<boolean> {
+    const item = await this.itemsRepository.findById(id);
+
+    if (!item) {
+      throw new ItemNotFoundException({ id });
+    }
+
     return this.itemsRepository.deleteById(id);
   }
 

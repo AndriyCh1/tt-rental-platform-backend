@@ -61,7 +61,7 @@ export class RentalService {
     const rental = await this.rentalRepository.findById(id);
 
     if (!rental) {
-      throw new RentalNotFoundException();
+      throw new RentalNotFoundException({ id });
     }
 
     return this.rentalRepository.updateById(id, { status });
@@ -92,7 +92,7 @@ export class RentalService {
     const item = await this.itemsService.getItemById(itemId);
 
     if (!item) {
-      throw new ItemNotFoundException();
+      throw new ItemNotFoundException({ id: itemId });
     }
   }
 

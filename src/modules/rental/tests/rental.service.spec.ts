@@ -8,6 +8,7 @@ import {
   ItemNotFoundException,
   OverlappingRentalsException,
   PastStartDateException,
+  RentalNotFoundException,
 } from '#modules/rental/exceptions';
 import { RentalRepository } from '#modules/rental/rental.repository';
 import { RentalService } from '#modules/rental/rental.service';
@@ -79,10 +80,11 @@ describe('RentalService', () => {
       await expect(
         service.initiateItemRent({
           ...rentalsFactory.build(),
+          itemId: 1,
           startDate: new Date(),
           endDate: new Date(),
         }),
-      ).rejects.toThrow(new ItemNotFoundException());
+      ).rejects.toThrow(new ItemNotFoundException({ id: 1 }));
     });
 
     it('should validate the date range if start date is after end date', async () => {
@@ -153,12 +155,12 @@ describe('RentalService', () => {
       });
     });
 
-    it('should throw error if item was not found', async () => {
+    it('should throw error if rental was not found', async () => {
       rentalsRepositoryMock.findById.mockResolvedValueOnce(null);
 
-      await expect(
-        service.updateRentalStatus(1, 'completed'),
-      ).rejects.toThrow();
+      await expect(service.updateRentalStatus(1, 'completed')).rejects.toThrow(
+        new RentalNotFoundException({ id: 1 }),
+      );
     });
   });
 

@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 
 import { CreateItemDto } from '#modules/items/dtos/requests/create-item.dto';
 

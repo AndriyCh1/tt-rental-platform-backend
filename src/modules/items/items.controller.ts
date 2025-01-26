@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -19,8 +20,9 @@ import { CreateItemDto } from '#modules/items/dtos/requests/create-item.dto';
 import { GetItemsQueryDto } from '#modules/items/dtos/requests/get-items-query.dto';
 import { UpdateItemDto } from '#modules/items/dtos/requests/update-item.dto';
 import { ItemResponseDto } from '#modules/items/dtos/responses/base-response.dto';
-import { ItemsService } from '#modules/items/items.service';
 import { Item } from '#shared/types/models';
+
+import { ItemsService } from './items.service';
 
 @ApiTags('Items')
 @Controller('items')
@@ -55,6 +57,7 @@ export class ItemsController {
   @Get('/:id')
   @ApiOperation({ summary: 'Get an item by id' })
   @ApiOkResponse({ type: ItemResponseDto })
+  @ApiNotFoundResponse({ description: 'Item not found' })
   async getItemById(@Param('id') id: string): Promise<Item> {
     return this.itemsService.getItemById(+id);
   }
@@ -62,6 +65,7 @@ export class ItemsController {
   @Patch('/:id')
   @ApiOperation({ summary: 'Update an item' })
   @ApiOkResponse({ type: ItemResponseDto })
+  @ApiNotFoundResponse({ description: 'Item not found' })
   async updateItem(
     @Param('id') id: string,
     @Body() payload: UpdateItemDto,
@@ -71,6 +75,7 @@ export class ItemsController {
 
   @Delete('/:id')
   @ApiOperation({ summary: 'Delete an item' })
+  @ApiNotFoundResponse({ description: 'Item not found' })
   @ApiOkResponse({ type: Boolean })
   async deleteItem(@Param('id') id: string): Promise<boolean> {
     return this.itemsService.deleteItem(+id);

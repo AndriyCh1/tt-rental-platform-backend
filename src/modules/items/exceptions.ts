@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 
 export class ItemNotFoundException extends NotFoundException {
-  constructor() {
-    super('Item not found');
+  constructor({ id }: { id: number }) {
+    super(`Item with ID ${id} not found`);
   }
 }

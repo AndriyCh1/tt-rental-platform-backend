@@ -24,24 +24,27 @@ export class ItemsRepository {
   }
 
   async updateById(id: Item['id'], updateData: UpdateItemData): Promise<Item> {
-    const index = this.items.findIndex((item) => item.id === id);
+    const index = this.getIndexById(id);
+    const updatedItem = { ...this.items[index], ...updateData };
+    this.items[index] = updatedItem;
 
-    if (index === -1) {
-      throw new Error('Item not found');
-    }
-
-    this.items[index] = { ...this.items[index], ...updateData };
-
-    return this.items[index];
+    return updatedItem;
   }
 
   async deleteById(id: Item['id']): Promise<boolean> {
-    const index = this.items.findIndex((item) => item.id === id);
-
-    if (index === -1) return false;
-
+    const index = this.getIndexById(id);
     this.items.splice(index, 1);
 
     return true;
+  }
+
+  private getIndexById(id: Item['id']): number {
+    const index = this.items.findIndex((item) => item.id === id);
+
+    if (index === -1) {
+      throw new Error(`Item with ID ${id} not found`);
+    }
+
+    return index;
   }
 }

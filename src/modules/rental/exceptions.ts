@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 
 export class ItemNotFoundException extends NotFoundException {
-  constructor() {
-    super('Item not found');
+  constructor({ id }: { id: number }) {
+    super(`${`Item with ID ${id} not found`}`);
   }
 }
 
 export class RentalNotFoundException extends NotFoundException {
-  constructor() {
-    super('Rental not found');
+  constructor({ id }: { id: number }) {
+    super(`Rental with ID ${id} not found`);
   }
 }
 
@@ -30,6 +30,6 @@ export class PastStartDateException extends BadRequestException {
 
 export class OverlappingRentalsException extends ConflictException {
   constructor() {
-    super('Item is already rented');
+    super('Item is already rented on this date');
   }
 }

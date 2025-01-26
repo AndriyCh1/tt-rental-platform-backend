@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
 import { ItemsModule } from '#modules/items/items.module';
-import { RentalRepository } from '#modules/rental/rental.repository';
 
 import { RentalController } from './rental.controller';
+import { RentalRepository } from './rental.repository';
 import { RentalService } from './rental.service';
 
 @Module({

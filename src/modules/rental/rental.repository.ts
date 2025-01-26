@@ -27,14 +27,20 @@ export class RentalRepository {
     id: Rental['id'],
     updateData: Partial<Entity<Rental>>,
   ): Promise<Rental> {
-    const index = this.rentals.findIndex((res) => res.id === id);
+    const index = this.getIndexById(id);
+    const updatedRental = { ...this.rentals[index], ...updateData };
+    this.rentals[index] = updatedRental;
+
+    return updatedRental;
+  }
+
+  private getIndexById(id: Rental['id']): number {
+    const index = this.rentals.findIndex((rental) => rental.id === id);
 
     if (index === -1) {
-      throw new Error('Rental not found');
+      throw new Error(`Rental with ID ${id} not found`);
     }
 
-    this.rentals[index] = { ...this.rentals[index], ...updateData };
-
-    return this.rentals[index];
+    return index;
   }
 }

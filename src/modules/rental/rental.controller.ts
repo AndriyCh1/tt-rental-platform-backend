@@ -30,16 +30,14 @@ export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
   @Post('/items/:itemId')
-  @ApiOperation({ summary: 'Requests an item to be rented.' })
+  @ApiOperation({ summary: 'Request to rent an item.' })
   @ApiCreatedResponse({ type: RentalResponseDto })
-  @ApiConflictResponse({ description: 'Item is already rented.' })
+  @ApiConflictResponse({ description: 'Item is already rented on this date.' })
   @ApiBadRequestResponse({
     description:
       'Invalid date range / End date is before start date / Start date is in the past.',
   })
-  @ApiNotFoundResponse({
-    description: 'Item not found.',
-  })
+  @ApiNotFoundResponse({ description: 'Item not found.' })
   async requestItemRent(
     @Body() dto: RequestItemRentDto,
     @Param('itemId') itemId: string,
@@ -56,6 +54,7 @@ export class RentalController {
   @Patch('/:id/status')
   @ApiOperation({ summary: 'Update the status of a rental.' })
   @ApiOkResponse({ type: RentalResponseDto })
+  @ApiNotFoundResponse({ description: 'Rental not found.' })
   async updateRentalStatus(
     @Param('id') id: string,
     @Body() dto: UpdateRentalStatusDto,
@@ -64,12 +63,12 @@ export class RentalController {
   }
 
   @Get('/items/:itemId')
-  @ApiOperation({ summary: 'Return all rentals for an item.' })
+  @ApiOperation({ summary: 'Return rentals for an item.' })
   @ApiOkResponse({ type: RentalResponseDto, isArray: true })
   async getRentalsByItemId(
     @Param('itemId') id: string,
     @Query() query: GetRentalsForItemQueryDto,
   ): Promise<Rental[]> {
-    return this.rentalService.getRentalsByItemId(+id, { status: query.status });
+    return this.rentalService.getRentalsByItemId(+id, query);
   }
 }

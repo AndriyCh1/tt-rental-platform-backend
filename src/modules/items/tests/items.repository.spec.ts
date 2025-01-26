@@ -67,28 +67,28 @@ describe('ItemsRepository', () => {
     });
   });
 
-  it('should delete item by id', async () => {
-    const data = itemsFactory.build();
-    const item = await service.insert(data);
-    await service.deleteById(item.id);
+  describe('Delete by id', () => {
+    it('should delete item by id', async () => {
+      const data = itemsFactory.build();
+      const item = await service.insert(data);
+      await service.deleteById(item.id);
 
-    const result = await service.findById(item.id);
+      const result = await service.findById(item.id);
 
-    expect(result).toBeNull();
-  });
+      expect(result).toBeNull();
+    });
 
-  it('should return true if item was deleted', async () => {
-    const data = itemsFactory.build();
-    const item = await service.insert(data);
+    it('should return true if item was deleted', async () => {
+      const data = itemsFactory.build();
+      const item = await service.insert(data);
 
-    const result = await service.deleteById(item.id);
+      const result = await service.deleteById(item.id);
 
-    expect(result).toBe(true);
-  });
+      expect(result).toBe(true);
+    });
 
-  it('should return false if item was not deleted', async () => {
-    const result = await service.deleteById(1);
-
-    expect(result).toBe(false);
+    it('should throw error if item was not found', async () => {
+      await expect(service.deleteById(1)).rejects.toThrow();
+    });
   });
 });
