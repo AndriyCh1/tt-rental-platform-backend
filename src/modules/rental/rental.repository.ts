@@ -1,32 +1,39 @@
 import { Injectable } from '@nestjs/common';
 
 import { Entity } from '#shared/types/database';
-import { Reservation } from '#shared/types/models';
+import { Rental } from '#shared/types/models';
 
 @Injectable()
 export class RentalRepository {
-  private reservations: Reservation[] = [];
+  private rentals: Rental[] = [];
 
-  async insert(reservation: Entity<Reservation>): Promise<Reservation> {
-    const id = this.reservations.length + 1;
-    const newReservation = { ...reservation, id };
-    this.reservations.push(newReservation);
+  async insert(rental: Entity<Rental>): Promise<Rental> {
+    const id = this.rentals.length + 1;
+    const newRental = { ...rental, id };
+    this.rentals.push(newRental);
 
-    return newReservation;
+    return newRental;
   }
 
-  async findAll(): Promise<Reservation[]> {
-    return [...this.reservations];
+  async findAll(): Promise<Rental[]> {
+    return this.rentals;
   }
 
+  async findById(id: Rental['id']): Promise<Rental | null> {
+    return this.rentals.find((rental) => rental.id === id) || null;
+  }
   async updateById(
-    id: Reservation['id'],
-    updateData: Partial<Entity<Reservation>>,
-  ): Promise<void> {
-    const index = this.reservations.findIndex((res) => res.id === id);
+    id: Rental['id'],
+    updateData: Partial<Entity<Rental>>,
+  ): Promise<Rental> {
+    const index = this.rentals.findIndex((res) => res.id === id);
 
-    if (index === -1) return;
+    if (index === -1) {
+      throw new Error('Rental not found');
+    }
 
-    this.reservations[index] = { ...this.reservations[index], ...updateData };
+    this.rentals[index] = { ...this.rentals[index], ...updateData };
+
+    return this.rentals[index];
   }
 }

@@ -29,8 +29,8 @@ export class ItemsController {
   @Post('/')
   @ApiOperation({ summary: 'List an item for rent' })
   @ApiCreatedResponse({ type: ItemResponseDto })
-  async addItem(@Body() dto: CreateItemDto): Promise<Item> {
-    return this.itemsService.addItem(dto);
+  async listItem(@Body() dto: CreateItemDto): Promise<Item> {
+    return this.itemsService.createItem(dto);
   }
 
   @Get('/')

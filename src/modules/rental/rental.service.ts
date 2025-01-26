@@ -3,17 +3,18 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
 import { ItemsService } from '#modules/items/items.service';
-import { Reservation } from '#shared/types/models';
+import { Rental } from '#shared/types/models';
+import { checkDatesOverlapping } from '#shared/utils/dates';
 
 import {
   InvalidDateRangeException,
   ItemNotFoundException,
-  NoActiveReservationException,
-  OverlappingReservationException,
+  OverlappingRentalsException,
   PastStartDateException,
+  RentalNotFoundException,
 } from './exceptions';
 import { RentalRepository } from './rental.repository';
-import { RentItemData } from './types';
+import { CreateRentalData, GetRentalsByItemOptions } from './types';
 
 dayjs.extend(utc);
 
@@ -24,8 +25,8 @@ export class RentalService {
     private readonly rentalRepository: RentalRepository,
   ) {}
 
-  async rentItem(payload: RentItemData): Promise<Reservation> {
-    const { itemId, startDate, endDate } = payload;
+  async initiateItemRent(payload: CreateRentalData): Promise<Rental> {
+    const { itemId, startDate, endDate, contactEmail, contactPhone } = payload;
 
     const start = dayjs.utc(startDate).toDate();
     const end = dayjs.utc(endDate).toDate();
@@ -33,51 +34,61 @@ export class RentalService {
     await this.ensureItemExists(itemId);
     this.validateDateRange(start, end);
 
-    const existingReservations = await this.getActiveItemReservations(itemId);
+    const reservedRentals = await this.getRentalsByItemId(itemId, {
+      status: 'reserved',
+    });
 
-    if (this.hasOverlappingReservation(existingReservations, start, end)) {
-      throw new OverlappingReservationException();
+    if (this.hasOverlappingRentals(reservedRentals, start, end)) {
+      throw new OverlappingRentalsException();
     }
 
-    const reservation = await this.rentalRepository.insert({
+    const rental = await this.rentalRepository.insert({
       itemId,
       startDate: start.toISOString(),
       endDate: end.toISOString(),
-      status: 'active',
+      status: 'pending',
+      contactEmail,
+      contactPhone,
     });
 
-    return reservation;
+    return rental;
   }
 
-  async getActiveItemReservations(
-    itemId: Reservation['itemId'],
-  ): Promise<Reservation[]> {
-    const reservations = await this.rentalRepository.findAll();
+  async updateRentalStatus(
+    id: Rental['id'],
+    status: Rental['status'],
+  ): Promise<Rental> {
+    const rental = await this.rentalRepository.findById(id);
 
-    return reservations.filter(
-      (reservation) =>
-        reservation.itemId === itemId && reservation.status === 'active',
-    );
-  }
-
-  async returnItem(itemId: Reservation['itemId']): Promise<void> {
-    const currentDate = dayjs.utc().toDate();
-
-    const reservation = await this.findActiveReservationForDate(
-      itemId,
-      currentDate,
-    );
-
-    if (!reservation) {
-      throw new NoActiveReservationException();
+    if (!rental) {
+      throw new RentalNotFoundException();
     }
 
-    await this.rentalRepository.updateById(reservation.id, {
-      status: 'completed',
-    });
+    return this.rentalRepository.updateById(id, { status });
   }
 
-  private async ensureItemExists(itemId: Reservation['itemId']): Promise<void> {
+  async getRentalsByItemId(
+    itemId: Rental['itemId'],
+    options: GetRentalsByItemOptions = {},
+  ): Promise<Rental[]> {
+    const rentals = await this.rentalRepository.findAll();
+
+    const filteredRentals = rentals.filter((rental) => {
+      if (rental.itemId !== itemId) {
+        return false;
+      }
+
+      if (options.status && rental.status !== options.status) {
+        return false;
+      }
+
+      return true;
+    });
+
+    return filteredRentals;
+  }
+
+  private async ensureItemExists(itemId: Rental['itemId']): Promise<void> {
     const item = await this.itemsService.getItemById(itemId);
 
     if (!item) {
@@ -95,35 +106,16 @@ export class RentalService {
     }
   }
 
-  private hasOverlappingReservation(
-    reservations: Reservation[],
+  private hasOverlappingRentals(
+    rentals: Rental[],
     start: Date,
     end: Date,
   ): boolean {
-    return reservations.some((reservation) => {
-      const resStart = new Date(reservation.startDate);
-      const resEnd = new Date(reservation.endDate);
+    return rentals.some((rental) => {
+      const rentalStart = new Date(rental.startDate);
+      const rentalEnd = new Date(rental.endDate);
 
-      return (
-        (start <= resEnd && start >= resStart) ||
-        (end <= resEnd && end >= resStart)
-      );
+      return checkDatesOverlapping(start, end, rentalStart, rentalEnd);
     });
-  }
-
-  private async findActiveReservationForDate(
-    itemId: Reservation['itemId'],
-    date: Date,
-  ): Promise<Reservation | null> {
-    const reservations = await this.getActiveItemReservations(itemId);
-
-    return (
-      reservations.find((reservation) => {
-        const start = new Date(reservation.startDate);
-        const end = new Date(reservation.endDate);
-
-        return start <= date && end >= date;
-      }) || null
-    );
   }
 }

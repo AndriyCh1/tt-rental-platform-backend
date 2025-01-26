@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
   IsNumber,
   IsOptional,
   IsString,
@@ -19,7 +20,7 @@ export class CreateItemDto {
   @IsOptional()
   @IsString()
   @MaxLength(1000)
-  description: string | undefined; // Explicitly undefined due to TS unexpected issues
+  description?: string;
 
   @ApiProperty({
     example: 'https://example.com/image.jpg',
@@ -27,16 +28,25 @@ export class CreateItemDto {
   @IsOptional()
   @IsString()
   @MaxLength(1000)
-  image: string | undefined;
+  image?: string;
 
   @ApiProperty({ example: 'cars' })
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  category: string | undefined;
+  category?: string;
 
   @ApiProperty({ example: 100 })
   @IsNumber()
   @Min(0)
   pricePerDay: number;
+
+  @ApiProperty({ example: 'example@example.com' })
+  @IsEmail()
+  contactEmail: string;
+
+  @ApiProperty({ example: '+1234567890' })
+  @IsOptional()
+  @IsString()
+  contactPhone?: string;
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ReservationResponseDto {
+export class RentalResponseDto {
   @ApiProperty()
   id: number;
 
@@ -12,4 +12,10 @@ export class ReservationResponseDto {
 
   @ApiProperty()
   status: string;
+
+  @ApiProperty()
+  contactEmail: string;
+
+  @ApiProperty({ required: false })
+  contactPhone?: string;
 }

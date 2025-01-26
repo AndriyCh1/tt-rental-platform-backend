@@ -10,6 +10,12 @@ export class ItemNotFoundException extends NotFoundException {
   }
 }
 
+export class RentalNotFoundException extends NotFoundException {
+  constructor() {
+    super('Rental not found');
+  }
+}
+
 export class InvalidDateRangeException extends BadRequestException {
   constructor() {
     super('End date is before start date');
@@ -22,14 +28,8 @@ export class PastStartDateException extends BadRequestException {
   }
 }
 
-export class OverlappingReservationException extends ConflictException {
+export class OverlappingRentalsException extends ConflictException {
   constructor() {
-    super('Reservation not available, item is already reserved');
-  }
-}
-
-export class NoActiveReservationException extends NotFoundException {
-  constructor() {
-    super('No active reservation found');
+    super('Item is already rented');
   }
 }

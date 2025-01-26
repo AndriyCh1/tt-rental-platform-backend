@@ -9,6 +9,8 @@ export const itemSeeds: Entity<Item>[] = [
       'A high-resolution DSLR camera with 4K video recording capabilities.',
     image: 'https://example.com/images/canon-eos-90d.jpg',
     category: 'Electronics',
+    contactEmail: 'xk6aU@example.com',
+    contactPhone: '1234567890',
   },
   {
     name: 'Sony Noise Cancelling Headphones',
@@ -17,6 +19,8 @@ export const itemSeeds: Entity<Item>[] = [
       'Over-ear Bluetooth headphones with active noise cancellation.',
     image: 'https://example.com/images/sony-headphones.jpg',
     category: 'Electronics',
+    contactEmail: 'djTQx@example.com',
+    contactPhone: '9876543210',
   },
   {
     name: 'Camping Tent for 4 People',
@@ -24,6 +28,8 @@ export const itemSeeds: Entity<Item>[] = [
     description: 'A durable and lightweight camping tent for family trips.',
     image: 'https://example.com/images/camping-tent.jpg',
     category: 'Outdoor',
+    contactEmail: 's5b4r@example.com',
+    contactPhone: '5555555555',
   },
   {
     name: 'Mountain Bike',
@@ -31,6 +37,8 @@ export const itemSeeds: Entity<Item>[] = [
     description: 'A versatile mountain bike suitable for all terrains.',
     image: 'https://example.com/images/mountain-bike.jpg',
     category: 'Outdoor',
+    contactEmail: 'tqHbH@example.com',
+    contactPhone: '9999999999',
   },
   {
     name: 'Projector and Screen Combo',
@@ -39,6 +47,8 @@ export const itemSeeds: Entity<Item>[] = [
       'A full HD projector with a portable screen, perfect for events.',
     image: 'https://example.com/images/projector-screen.jpg',
     category: 'Electronics',
+    contactEmail: 'xk6aU@example.com',
+    contactPhone: '1234567890',
   },
   {
     name: 'Electric Drill',
@@ -46,6 +56,8 @@ export const itemSeeds: Entity<Item>[] = [
     description: 'A powerful electric drill for home improvement projects.',
     image: 'https://example.com/images/electric-drill.jpg',
     category: 'Tools',
+    contactEmail: 'djTQx@example.com',
+    contactPhone: '9876543210',
   },
   {
     name: 'Lawn Mower',
@@ -53,6 +65,8 @@ export const itemSeeds: Entity<Item>[] = [
     description: 'A gas-powered lawn mower for medium to large yards.',
     image: 'https://example.com/images/lawn-mower.jpg',
     category: 'Tools',
+    contactEmail: 's5b4r@example.com',
+    contactPhone: '5555555555',
   },
   {
     name: 'Sofa Set',
@@ -61,6 +75,8 @@ export const itemSeeds: Entity<Item>[] = [
       'A luxurious three-seater sofa set, perfect for events or staging.',
     image: 'https://example.com/images/sofa-set.jpg',
     category: 'Furniture',
+    contactEmail: 'tqHbH@example.com',
+    contactPhone: '9999999999',
   },
   {
     name: 'Wedding Arch',
@@ -68,6 +84,8 @@ export const itemSeeds: Entity<Item>[] = [
     description: 'A decorative wedding arch made of wood and flowers.',
     image: 'https://example.com/images/wedding-arch.jpg',
     category: 'Event Decor',
+    contactEmail: 'xk6aU@example.com',
+    contactPhone: '1234567890',
   },
   {
     name: 'DJ Mixer',
@@ -75,5 +93,7 @@ export const itemSeeds: Entity<Item>[] = [
     description: 'A professional-grade DJ mixer for parties and events.',
     image: 'https://example.com/images/dj-mixer.jpg',
     category: 'Electronics',
+    contactEmail: 'djTQx@example.com',
+    contactPhone: '9876543210',
   },
 ];

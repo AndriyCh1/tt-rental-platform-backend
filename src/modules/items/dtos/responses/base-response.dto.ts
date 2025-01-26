@@ -18,4 +18,10 @@ export class ItemResponseDto {
 
   @ApiProperty({ required: false })
   image?: string;
+
+  @ApiProperty()
+  contactEmail: string;
+
+  @ApiProperty({ required: false })
+  contactPhone?: string;
 }

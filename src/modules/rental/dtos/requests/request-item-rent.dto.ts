@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
+  IsOptional,
+  IsString,
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
@@ -46,7 +49,7 @@ function IsDateWithTimezone(options?: ValidationOptions) {
   };
 }
 
-export class RentItemDto {
+export class RequestItemRentDto {
   @ApiProperty({
     example: '2025-03-25T13:00:00.000Z',
     description:
@@ -62,4 +65,13 @@ export class RentItemDto {
   })
   @IsDateWithTimezone()
   endDate: string;
+
+  @ApiProperty({ example: 'example@example.com' })
+  @IsEmail()
+  contactEmail: string;
+
+  @ApiProperty({ example: '+1234567890' })
+  @IsOptional()
+  @IsString()
+  contactPhone?: string;
 }

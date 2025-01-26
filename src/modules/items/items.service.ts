@@ -10,7 +10,7 @@ import { CreateItemData, GetItemsOptions, UpdateItemData } from './types';
 export class ItemsService {
   constructor(private readonly itemsRepository: ItemsRepository) {}
 
-  async addItem(payload: CreateItemData): Promise<Item> {
+  async createItem(payload: CreateItemData): Promise<Item> {
     return this.itemsRepository.insert(payload);
   }
 

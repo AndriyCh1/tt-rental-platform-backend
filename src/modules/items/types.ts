@@ -2,10 +2,12 @@ import { Item } from '#shared/types/models';
 
 export type CreateItemData = {
   name: Item['name'];
-  description: Item['description'];
+  description?: Item['description'];
   pricePerDay: Item['pricePerDay'];
-  category: Item['category'];
-  image: Item['image'];
+  contactEmail: Item['contactEmail'];
+  category?: Item['category'];
+  image?: Item['image'];
+  contactPhone?: Item['contactPhone'];
 };
 
 export type UpdateItemData = Partial<CreateItemData>;

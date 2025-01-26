@@ -11,7 +11,7 @@ export class SeederService {
 
   async seedItems() {
     for (const item of itemSeeds) {
-      await this.itemsService.addItem(item as CreateItemData);
+      await this.itemsService.createItem(item as CreateItemData);
     }
 
     return await this.itemsService.getItems();

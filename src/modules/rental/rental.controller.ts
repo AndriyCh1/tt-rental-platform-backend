@@ -1,37 +1,38 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
+  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { RentItemDto } from '#modules/rental/dtos/requests/rent-item.dto';
-import { ReservationResponseDto } from '#modules/rental/dtos/responses/base-response.dto';
+import { GetRentalsForItemQueryDto } from '#modules/rental/dtos/requests/get-rentals-for-item-query.dto';
+import { RequestItemRentDto } from '#modules/rental/dtos/requests/request-item-rent.dto';
+import { UpdateRentalStatusDto } from '#modules/rental/dtos/requests/update-rental-status.dto';
+import { RentalResponseDto } from '#modules/rental/dtos/responses/base-response.dto';
 import { RentalService } from '#modules/rental/rental.service';
-import { Reservation } from '#shared/types/models';
+import { Rental } from '#shared/types/models';
 
-@ApiTags('Rent')
-@Controller('/')
+@ApiTags('Rentals')
+@Controller('/rentals')
 export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
-  @Get('/items/:itemId/reservations')
-  @ApiOperation({ summary: 'Returns all active reservations for an item.' })
-  @ApiOkResponse({ type: ReservationResponseDto, isArray: true })
-  async getItemReservations(
-    @Param('itemId') id: string,
-  ): Promise<Reservation[]> {
-    return this.rentalService.getActiveItemReservations(+id);
-  }
-
-  @Post('/items/:itemId/rent')
-  @ApiOperation({ summary: 'Rents an item for a given date range.' })
-  @ApiConflictResponse({
-    description: 'Reservation not available, item is already reserved.',
-  })
+  @Post('/items/:itemId')
+  @ApiOperation({ summary: 'Requests an item to be rented.' })
+  @ApiCreatedResponse({ type: RentalResponseDto })
+  @ApiConflictResponse({ description: 'Item is already rented.' })
   @ApiBadRequestResponse({
     description:
       'Invalid date range / End date is before start date / Start date is in the past.',
@@ -39,21 +40,36 @@ export class RentalController {
   @ApiNotFoundResponse({
     description: 'Item not found.',
   })
-  async rentItem(
-    @Body() dto: RentItemDto,
+  async requestItemRent(
+    @Body() dto: RequestItemRentDto,
     @Param('itemId') itemId: string,
-  ): Promise<Reservation> {
-    return this.rentalService.rentItem({
+  ): Promise<Rental> {
+    return this.rentalService.initiateItemRent({
       itemId: +itemId,
       startDate: new Date(dto.startDate),
       endDate: new Date(dto.endDate),
+      contactEmail: dto.contactEmail,
+      contactPhone: dto.contactPhone,
     });
   }
 
-  @Patch('/items/:itemId/return')
-  @ApiOperation({ summary: 'Returns an item.' })
-  @ApiNotFoundResponse({ description: 'No active reservation found.' })
-  async returnItem(@Param('itemId') id: string): Promise<void> {
-    return this.rentalService.returnItem(+id);
+  @Patch('/:id/status')
+  @ApiOperation({ summary: 'Update the status of a rental.' })
+  @ApiOkResponse({ type: RentalResponseDto })
+  async updateRentalStatus(
+    @Param('id') id: string,
+    @Body() dto: UpdateRentalStatusDto,
+  ) {
+    return this.rentalService.updateRentalStatus(+id, dto.status);
+  }
+
+  @Get('/items/:itemId')
+  @ApiOperation({ summary: 'Return all rentals for an item.' })
+  @ApiOkResponse({ type: RentalResponseDto, isArray: true })
+  async getRentalsByItemId(
+    @Param('itemId') id: string,
+    @Query() query: GetRentalsForItemQueryDto,
+  ): Promise<Rental[]> {
+    return this.rentalService.getRentalsByItemId(+id, { status: query.status });
   }
 }
