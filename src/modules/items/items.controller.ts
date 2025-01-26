@@ -17,6 +17,7 @@ import {
 
 import { CreateItemDto } from '#modules/items/dtos/requests/create-item.dto';
 import { GetItemsQueryDto } from '#modules/items/dtos/requests/get-items-query.dto';
+import { UpdateItemDto } from '#modules/items/dtos/requests/update-item.dto';
 import { ItemResponseDto } from '#modules/items/dtos/responses/base-response.dto';
 import { ItemsService } from '#modules/items/items.service';
 import { Item } from '#shared/types/models';
@@ -29,7 +30,7 @@ export class ItemsController {
   @Post('/')
   @ApiOperation({ summary: 'List an item for rent' })
   @ApiCreatedResponse({ type: ItemResponseDto })
-  async listItem(@Body() dto: CreateItemDto): Promise<Item> {
+  async createItem(@Body() dto: CreateItemDto): Promise<Item> {
     return this.itemsService.createItem(dto);
   }
 
@@ -51,12 +52,19 @@ export class ItemsController {
     });
   }
 
+  @Get('/:id')
+  @ApiOperation({ summary: 'Get an item by id' })
+  @ApiOkResponse({ type: ItemResponseDto })
+  async getItemById(@Param('id') id: string): Promise<Item> {
+    return this.itemsService.getItemById(+id);
+  }
+
   @Patch('/:id')
   @ApiOperation({ summary: 'Update an item' })
   @ApiOkResponse({ type: ItemResponseDto })
   async updateItem(
     @Param('id') id: string,
-    @Body() payload: CreateItemDto,
+    @Body() payload: UpdateItemDto,
   ): Promise<Item> {
     return this.itemsService.updateItem(+id, payload);
   }

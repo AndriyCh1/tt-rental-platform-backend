@@ -4,7 +4,5 @@ export const checkDatesOverlapping = (
   start2: Date,
   end2: Date,
 ) => {
-  return (
-    (start1 <= end2 && start1 >= start2) || (end1 <= end2 && end1 >= start2)
-  );
+  return start1 <= end2 && end1 >= start2;
 };

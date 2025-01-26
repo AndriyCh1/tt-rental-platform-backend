@@ -8,6 +8,8 @@ import { isInt, isNumber } from 'class-validator';
  * Useful for converting unknown value types to number.
  */
 export const toNumberOrFallback = (value: unknown, fallback?: any) => {
+  if (typeof value !== 'string' && typeof value !== 'number') return fallback;
+
   const number = Number(value);
 
   return isNumber(number) ? number : fallback;
@@ -19,6 +21,8 @@ export const toNumberOrFallback = (value: unknown, fallback?: any) => {
  * Useful for converting unknown value types to integer.
  */
 export const toIntOrFallback = (value: unknown, fallback?: any) => {
+  if (typeof value !== 'string' && typeof value !== 'number') return fallback;
+
   const number = Number(value);
 
   return isInt(number) ? number : fallback;

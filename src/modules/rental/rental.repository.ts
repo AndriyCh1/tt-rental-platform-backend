@@ -22,6 +22,7 @@ export class RentalRepository {
   async findById(id: Rental['id']): Promise<Rental | null> {
     return this.rentals.find((rental) => rental.id === id) || null;
   }
+
   async updateById(
     id: Rental['id'],
     updateData: Partial<Entity<Rental>>,
