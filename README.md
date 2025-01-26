@@ -80,17 +80,17 @@ To help with testing, a Seeder Controller has been included to populate the in-m
 **Business Workflow**:
 
 - The owner creates a listing, specifying item details and personal contact information.
-  POST /items
+  `POST /items`
 - Renters browse all available items (with filtering and sorting options) and select an item to rent.
-  GET /items
+  `GET /items`
 - The renter submits a rental request. The rental is created and marked as "pending".
-  POST /rentals/items/:itemId
+  `POST /rentals/items/:itemId`
 - The owner accepts or rejects the request, and the rental status is updated accordingly - "approved" or "declined".
-  PATCH /rentals/:id/status Status: "approved" or "declined"
+  `PATCH /rentals/:id/status` Status: "approved" or "declined"
 - The renter makes a payment and the item is marked as "reserved" (with no payment integration, only teh owner can update the status).
-  PATCH /rentals/:id/status Status: "reserved"
+  `PATCH /rentals/:id/status` Status: "reserved"
 - The renter returns the item and the owner updates the rental status to "returned".
-  PATCH /rentals/:id/status Status: "returned"
+  `PATCH /rentals/:id/status` Status: "returned"
 
 **Edge Cases Handled**
 
